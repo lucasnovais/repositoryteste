@@ -2,6 +2,7 @@ package br.sceweb.teste;
 
 import static org.junit.Assert.*;
 
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -36,10 +37,6 @@ static EmpresaDAO empresaDAO;
 	empresaDAO.exclui("89424232000180");
 	}
 	
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception{
-		
-	}
 	
 	@Test
 	public void CT01UC01FBCadastrarEmpresa_com_sucesso() {
@@ -48,5 +45,23 @@ static EmpresaDAO empresaDAO;
 		 */
 		assertEquals( 1, empresaDAO.adiciona(empresa) );
 	}
+	
+	@Test (expected = RuntimeException.class)
+	public void CT02UC01FBCadastrarEmpresa_com_cnpj_ja_cadastrado() {
+		empresaDAO.adiciona( empresa );
+		empresaDAO.adiciona( empresa );
+	}
+	
+	@Test 
+	public void CT03UC02FBExclusao_com_cnpj_invalido() {
+		assertEquals( 0,empresaDAO.exclui( "1" ) );
+	}
+
+	@AfterClass
+	public static void tearDownAfterClass() throws Exception{
+		empresaDAO.exclui("89424232000180");
+	}
+	
+	
 
 }

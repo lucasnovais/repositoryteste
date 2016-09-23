@@ -1,5 +1,6 @@
 package br.sceweb.modelo;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.PreparedStatement;
@@ -45,4 +46,30 @@ public class EmpresaDAO {
 	return codigoretorno;
 	}
 	
+
+
+
+public static Empresa consulta(String cnpj) {
+	Empresa empresa = null;
+	java.sql.PreparedStatement ps;
+	try (Connection conn = new FabricaDeConexoes().getConnection()) {
+		ps = conn.prepareStatement("select * from empresa where cnpj = ?");
+		ps.setString(1, cnpj);
+		ResultSet resultSet = ps.executeQuery();
+		while (resultSet.next()) {
+			empresa = new Empresa();
+			empresa.setCnpj(resultSet.getString("cnpj"));
+			empresa.setNomeDaEmpresa(resultSet.getString("nomeDaEmpresa"));
+			empresa.setNomeFantasia(resultSet.getString("nomeFantasia"));
+			empresa.setEndereco(resultSet.getString("endereco"));
+			empresa.setTelefone(resultSet.getString("telefone"));
+		}
+		resultSet.close();
+		ps.close();
+	} catch (SQLException e) {
+		throw new RuntimeException(e);
+	}
+	return empresa;
+}
+
 }
